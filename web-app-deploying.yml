@@ -1,6 +1,12 @@
-- name: Web Server Deployment
-  hosts: servers
+- name: Create AWS Target Group and Register EC2 Instances
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tags: provisioning
   tasks:
-  - package: "name=apache2 state=present"
-  - copy: "src=/home/ubuntu/playbook/cricket_project dest=/var/www/html"
-  - service: "name=apache2 state=started"
+    - name: Web Server Deployment
+      hosts: servers
+      tasks:
+      - package: "name=apache2 state=present"
+      - copy: "src=/home/ubuntu/playbook/cricket_project dest=/var/www/html"
+      - service: "name=apache2 state=started"
