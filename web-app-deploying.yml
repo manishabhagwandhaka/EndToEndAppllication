@@ -7,7 +7,7 @@
   tasks:
    - name: Web Server Deployment
      # hosts: servers
-     - package: "name=apache2 state=present"
+     - service: "name=apache2 state=present"
      - copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-3-238-155-144.compute-1.amazonaws.com:/var/www/html"
      - copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-18-207-97-24.compute-1.amazonaws.com:/var/www/html"
      - copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-44-203-227-57.compute-1.amazonaws.com:/var/www/html"
