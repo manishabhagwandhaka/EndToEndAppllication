@@ -39,7 +39,7 @@
         state: started
         enabled: yes
 
-handlers:
+  handlers:
   - name: Restart apache
     service:
       name: apache2
