@@ -7,5 +7,5 @@
   tags: provisioning
   tasks:
     - name: Include deployment playbook
-      include: deploy.yml
+      include_tasks: deploy.yml
   
