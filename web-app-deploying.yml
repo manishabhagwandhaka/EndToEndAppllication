@@ -1,0 +1,6 @@
+- name: Web Server Deployment
+  hosts: servers
+  tasks:
+  - package: "name=apache2 state=present"
+  - copy: "src=/home/ubuntu/playbook/cricket_project dest=/var/www/html"
+  - service: "name=apache2 state=started"
