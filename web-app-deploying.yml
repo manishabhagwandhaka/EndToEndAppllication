@@ -6,5 +6,5 @@
   gather_facts: False
   tags: provisioning
   tasks:
-    - include: deploy.yml
+    include: deploy.yml
   
