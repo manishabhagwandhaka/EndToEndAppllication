@@ -1,10 +1,10 @@
 ---
 - name: Deploy web application from GitHub to Apache server
-  hosts: webservers
+  hosts: servers
   become: yes  # Use this if you need root privileges
   vars:
-    repo_url: 'https://github.com/yourusername/yourrepository.git'
-    repo_dest: /var/www/html/yourapp
+    repo_url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication/tree/main/project1'
+    repo_dest: /var/www/html/
     apache_config_file: /etc/apache2/sites-available/000-default.conf
 
   tasks:
