@@ -1,20 +1,52 @@
-- name: Create AWS Target Group and Register EC2 Instances
-  hosts: localhost
-  connection: local
-  #hosts: servers
-  gather_facts: False
-  tags: provisioning
+---
+- name: Deploy web application from GitHub to Apache server
+  hosts: webservers
+  become: yes  # Use this if you need root privileges
+  vars:
+    repo_url: 'https://github.com/yourusername/yourrepository.git'
+    repo_dest: /var/www/html/yourapp
+    apache_config_file: /etc/apache2/sites-available/000-default.conf
+
   tasks:
-   - name: Web Server Deployment
-     # hosts: servers
-     service:
+    - name: Install Apache and Git
+      apt:
+        name:
+          - apache2
+          - git
+        state: present
+      notify:
+        - Restart apache
+
+    - name: Remove old application files
+      file:
+        path: "{{ repo_dest }}"
+        state: absent
+
+    - name: Clone the GitHub repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        version: master
+        force: yes
+
+    - name: Copy Apache configuration file
+      copy:
+        src: apache-config-file
+        dest: "{{ apache_config_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Restart apache
+
+    - name: Ensure Apache is running
+      service:
         name: apache2
         state: started
         enabled: yes
 
-     copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-3-238-155-144.compute-1.amazonaws.com:/var/www/html"
-     copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-18-207-97-24.compute-1.amazonaws.com:/var/www/html"
-     copy: "src=/home/ubuntu/playbook/cricket_project dest=ubuntu@ec2-44-203-227-57.compute-1.amazonaws.com:/var/www/html"
-     service: 
-        name: apache2 
-        state: started
+  handlers:
+    - name: Restart apache
+      service:
+        name: apache2
+        state: restarted
