@@ -1,13 +1,19 @@
 ---
-- name: Deploy web application from GitHub to Apache server
-  hosts: servers
-  become: yes  # Use this if you need root privileges
-  vars:
-    repo_url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication/tree/main/project1'
-    repo_dest: /var/www/html/
-    apache_config_file: /etc/apache2/sites-available/000-default.conf
-
+- name: Create AWS Target Group and Register EC2 Instances
+  hosts: localhost
+  connection: local
+  #hosts: servers
+  gather_facts: False
+  tags: provisioning
   tasks:
+    - name: Deploy web application from GitHub to Apache server
+      hosts: servers
+      become: yes  # Use this if you need root privileges
+      vars:
+      repo_url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication/tree/main/project1'
+      repo_dest: /var/www/html/
+      apache_config_file: /etc/apache2/sites-available/000-default.conf
+
     - name: Install Apache and Git
       apt:
         name: 
