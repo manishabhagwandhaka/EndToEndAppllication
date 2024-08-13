@@ -10,7 +10,7 @@
   tasks:
     - name: Install Apache and Git
       apt:
-        name:
+        name: 
           - apache2
           - git
         state: present
