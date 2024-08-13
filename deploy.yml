@@ -1,3 +1,4 @@
+---
 - name: Deploy web application from GitHub to Apache server
   hosts: servers
   become: yes  # Use this if you need root privileges
