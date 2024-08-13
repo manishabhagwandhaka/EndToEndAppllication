@@ -8,7 +8,7 @@
     apache_config_file: /etc/apache2/sites-available/000-default.conf
   tasks:
    - name: Install Apache and Git
-      apt:
+     apt:
        name: 
         - apache2
         - git
@@ -30,8 +30,8 @@
        owner: root
        group: root
        mode: '0644'
-      notify:
-        - Restart apache
+     notify:
+       - Restart apache
 
    - name: Ensure Apache is running
      service:
