@@ -1,0 +1,25 @@
+- name: Create AWS Target Group and Register EC2 Instances
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tags: provisioning
+  tasks:
+    - name: Create a target group with instance targets
+      community.aws.elb_target_group:
+        name: ABL-group
+        protocol: http
+        port: 81
+        vpc_id: vpc-02e9b0a47a4ce5b65
+        health_check_protocol: http
+        health_check_path: /
+        successful_response_codes: "200,250-260"
+        targets:
+          - Id: i-00bcbfadd4f6d3d82
+            Port: 80
+          - Id: i-05c0e1bda44ab11a5
+            Port: 80
+          - Id: i-058180180c87ed80e
+            Port: 80
+        state: present
+        wait_timeout: 200
+        wait: true
