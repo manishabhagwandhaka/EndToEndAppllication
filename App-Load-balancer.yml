@@ -1,0 +1,29 @@
+- name: Create AWS Target Group and Register EC2 Instances
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tags: provisioning
+  tasks:
+    - name: Create a target group with instance targets
+      community.aws.elb_application_lb:
+        name: AplicationLoadBalancer
+        security_groups:
+          - launch-wizard-1
+        subnets:
+          - subnet-02d92873a7ad9da7d  # Replace with your subnet IDs
+          - subnet-0dda09bd0f912bc8c
+          - subnet-0e1cf0d2857c3b06c
+          - subnet-0c20b076f68398c9d
+          - subnet-0a056218bb9e01abf
+          - subnet-029694786a3b6bc4c
+        listeners:
+          - Protocol: HTTP # Required. The protocol for connections from clients to the load balancer (HTTP or HTTPS) (case-sensitive).
+            Port: 80 # Required. The port on which the load balancer is listening.
+            # The security policy that defines which ciphers and protocols are supported. The default is the current predefined security policy.
+            #SslPolicy: ELBSecurityPolicy-2015-05
+            #Certificates: # The ARN of the certificate
+             # - CertificateArn: arn:aws:iam::123456789012:server-certificate/test.domain.com
+            DefaultActions:
+              - Type: forward # Required.
+                TargetGroupName: ABL-group # Required. The name of the target group
+        state: present
