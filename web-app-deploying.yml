@@ -6,53 +6,5 @@
   gather_facts: False
   tags: provisioning
   tasks:
-    - name: Deploy web application from GitHub to Apache server
-      hosts: servers
-      become: yes  # Use this if you need root privileges
-      vars:
-      repo_url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication/tree/main/project1'
-      repo_dest: /var/www/html/
-      apache_config_file: /etc/apache2/sites-available/000-default.conf
-
-    - name: Install Apache and Git
-      apt:
-        name: 
-          - apache2
-          - git
-        state: present
-      notify:
-        - Restart apache
-
-    - name: Remove old application files
-      file:
-        path: "{{ repo_dest }}"
-        state: absent
-
-    - name: Clone the GitHub repository
-      git:
-        repo: "{{ repo_url }}"
-        dest: "{{ repo_dest }}"
-        version: master
-        force: yes
-
-    - name: Copy Apache configuration file
-      copy:
-        src: apache-config-file
-        dest: "{{ apache_config_file }}"
-        owner: root
-        group: root
-        mode: '0644'
-      notify:
-        - Restart apache
-
-    - name: Ensure Apache is running
-      service:
-        name: apache2
-        state: started
-        enabled: yes
-
-  handlers:
-    - name: Restart apache
-      service:
-        name: apache2
-        state: restarted
+    - include: deploy.yml
+  
