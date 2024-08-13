@@ -40,7 +40,7 @@
         enabled: yes
 
 handlers:
-    - name: Restart apache
-      service:
-        name: apache2
-        state: restarted
+  - name: Restart apache
+    service:
+      name: apache2
+      state: restarted
