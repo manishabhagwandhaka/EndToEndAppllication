@@ -50,7 +50,7 @@ pipeline {
 ---------------------------------------------------------------------
 
 3:-  Creating Target group
-target-group.yml
+
 pipeline {
     agent any
 
@@ -73,3 +73,33 @@ pipeline {
         }
     }
 }
+
+------------------------------------------------------------------
+
+4:- Creating Application Load Balancer
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication']])
+            }
+        }
+        
+        stage('Execute Playbook') {
+            steps {
+                // execute ansible playbook 
+                
+               ansiblePlaybook credentialsId: 'jenkinsAnsible', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/hosts', playbook: 'App-Load-balancer.yml'
+
+
+            }
+            
+        }
+    }
+}
+
+---------------------------------------------------------------------
+
+5:- 
