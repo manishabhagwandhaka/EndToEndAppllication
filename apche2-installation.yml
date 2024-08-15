@@ -1,6 +1,7 @@
 -
   name: Install and configure httpd
   hosts: servers
+  connection: local
   become: yes  # This assumes you need elevated privileges to install packages and manage services
   gather_facts: False
   tags: provisioning
