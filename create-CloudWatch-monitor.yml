@@ -1,0 +1,36 @@
+- name: create alarm with metrics
+    community.aws.cloudwatch_metric_alarm:
+      state: present
+      region: us-east-1
+      name: "cpu-low"
+      metrics:
+        - id: 'CPU'
+          metric_stat:
+            metric:
+              dimensions:
+                name: "InstanceId"
+                value: 3.238.155.144
+              metric_name: "CPUUtilization"
+              namespace: "AWS/EC2"
+            period: "300"
+            stat: "Average"
+            unit: "Percent"
+          return_data: false
+      alarm_actions: ["action1", "action2"]
+
+  - name: Create an alarm to recover a failed instance
+    community.aws.cloudwatch_metric_alarm:
+      state: present
+      region: us-east-1
+      name: "recover-instance"
+      metric: "StatusCheckFailed_System"
+      namespace: "AWS/EC2"
+      statistic: "Minimum"
+      comparison: "GreaterThanOrEqualToThreshold"
+      threshold: 1.0
+      period: 60
+      evaluation_periods: 2
+      unit: "Count"
+      description: "This will recover an instance when it fails"
+      dimensions: {"InstanceId":'3.238.155.144'}
+      alarm_actions: ["arn:aws:automate:us-east-1:ec2:recover"]
