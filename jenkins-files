@@ -1,0 +1,54 @@
+1:- Creating EC2 instances
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication']])
+            }
+        }
+        
+        stage('Execute Playbook') {
+            steps {
+                // execute ansible playbook 
+                
+                ansiblePlaybook playbook: 'create_ec2.yml'
+            }
+            
+        }
+    }
+}
+
+-------------------------------------------------------------
+
+2 :- Installing apache2 on servers
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication']])
+            }
+        }
+        
+        stage('Execute Playbook') {
+            steps {
+                // execute ansible playbook 
+                
+               ansiblePlaybook credentialsId: 'jenkinsAnsible', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/hosts', playbook: 'apche2-installation.yml'
+
+
+            }
+            
+        }
+    }
+}
+
+---------------------------------------------------------------------
+
+3:- 
