@@ -1,0 +1,9 @@
+[servers]
+server_1 ansible_host=184.72.184.165
+server_2 ansible_host=54.162.157.94
+server_3 ansible_host=54.162.157.94
+
+[all:vars]
+ansible_python=/usr/bin/python3
+ansible_user=ubuntu
+ansible_ssh_private_key_file=/home/ubuntu/keys/project.pem
