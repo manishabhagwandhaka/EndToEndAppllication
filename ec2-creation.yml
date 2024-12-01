@@ -1,23 +1,24 @@
-- name: Create AWS Target Group and Register EC2 Instances
+- name: Create EC2 Instances
   hosts: localhost
   connection: local
   gather_facts: False
   tags: provisioning
   vars:
-    keypair: jankins-key
+    keypair: project
     instance_type: t2.micro
-    instance_name: server
-    image: ami-04a81a99f5ec58529
+    image:  ami-0866a3c8686eaeeba
     wait: yes
     group: webserver
+    instance_name: server
     region: us-east-1
-    security_group: launch-wizard-1
+    security_group: launch-wizard-2
+    ec2_instance_count: 3
 
   tasks:
   - name: configuring security group for the instance
     ec2_group:
         name: "{{ security_group }}"
-        description: my-jenkins-security_group
+        description: launch-wizard-2 created 2024-11-19T10:37:44.370Z
         region: "{{ region }}"
         rules:
             - proto: tcp
@@ -43,4 +44,5 @@
         instance_type: "{{ instance_type}}"
         image_id: "{{ image }}"
         region: "{{ region }}"
+        count: "{{ ec2_instance_count }}"
         wait_timeout: 3
