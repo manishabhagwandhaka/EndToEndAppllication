@@ -1,0 +1,75 @@
+pipeline {
+    
+    agent any 
+        stages {
+            stage('Checkout'){
+                steps {
+                    git branch: 'main', url: 'https://github.com/manishabhagwandhaka/EndToEndAppllication.git'
+                }
+            }
+            stage('Sending file to ansible server over SSh'){
+                steps {
+                    sshagent(['ansible_server']) {
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205'
+                        sh 'scp -r /var/lib/jenkins/workspace/project/* ubuntu@172.31.29.205:/home/ubuntu'
+                      }
+                }
+            }
+            stage('Creating EC2 instances'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 cd /home/ubuntu'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 ansible-playbook ec2_creation.yml'
+                 }
+                }
+                
+            }
+            stage('Updating hosts file on master server'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205'
+                       sh 'scp /var/lib/jenkins/workspace/project/hosts ubuntu@172.31.29.205:/tmp/'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 sudo mv /tmp/hosts /etc/ansible/hosts'
+                       
+                 }
+                }
+                
+            }
+            stage('Connecting servers'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 cd /home/ubuntu'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 sudo ansible servers -m ping -u ubuntu'
+                 }
+                }
+                
+            }
+            stage('Installing Apache2 on servers'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 cd /home/ubuntu'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 ansible-playbook apache2_installation.yml'
+                 }
+                }
+                
+            }
+            stage('Creating Application load balancer on EC2 instances'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 cd /home/ubuntu'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 ansible-playbook App-Load-balancer.yml'
+                 }
+                }
+                
+            }
+            stage('Deploying Application'){
+                steps {
+                    sshagent(['ansible_server']) {
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 cd /home/ubuntu'
+                       sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.29.205 ansible-playbook web-app-deploying.yml'
+                 }
+                }
+                
+            }
+        }
+}
