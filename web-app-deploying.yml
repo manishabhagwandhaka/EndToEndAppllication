@@ -1,11 +1,18 @@
----
-- name: Create AWS Target Group and Register EC2 Instances
-  hosts: localhost
+-
+  name: Deploying web app
+  hosts: servers
   connection: local
-  #hosts: servers
+  become: yes  # This assumes you need elevated privileges to install packages and manage services
   gather_facts: False
   tags: provisioning
   tasks:
-    - name: Include deployment playbook
-      include_tasks: deploy.yml
-  
+    - name: Remove a specific file
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent 
+    - name: Deploying web application on server
+      ansible.builtin.copy:
+       src: /home/ubuntu/cricket
+       dest: /var/www/html/
+       remote_src: no
+       recurse: yes
